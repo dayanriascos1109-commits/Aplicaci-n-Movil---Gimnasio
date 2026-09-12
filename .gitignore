@@ -1,1 +1,46 @@
+# dependencias
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# nativo (generado por expo prebuild)
+/ios
+/android
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# credenciales de servicios — NUNCA se versionan
+google-services.json
+GoogleService-Info.plist
+
+# Metro
+.metro-health-check*
+
+# depuración
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# sistema
+.DS_Store
+*.pem
+
+# variables de entorno — solo se versiona .env.example
+.env
+.env.*
+!.env.example
+
+# TypeScript
+*.tsbuildinfo
+
+# canvas generado de los wireframes (se regenera desde wireframes/*.dc.html)
 wireframes/wireframes-app-fitness.html
