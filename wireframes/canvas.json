@@ -1,0 +1,54 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "1 · Modo entrenamiento", "x": 0, "y": 0, "w": 390, "h": 844 },
+    { "file": "Inicio.dc.html", "title": "2 · Inicio", "x": 520, "y": 0, "w": 390, "h": 844 },
+    { "file": "Resumen.dc.html", "title": "3 · Resumen post-entrenamiento", "x": 1040, "y": 0, "w": 390, "h": 844 },
+    { "file": "Regreso.dc.html", "title": "4 · Pantalla de regreso", "x": 1560, "y": 0, "w": 390, "h": 844 },
+    { "file": "Onboarding.dc.html", "title": "5 · Onboarding", "x": 2080, "y": 0, "w": 390, "h": 844 }
+  ],
+  "annotations": [
+    {
+      "id": "leyenda",
+      "x": 0,
+      "y": -350,
+      "w": 910,
+      "text": "WIREFRAMES · Fase 10\n\nBaja fidelidad a propósito: esto define estructura, jerarquía y copy, no la identidad visual (eso es la Fase 11 — marca, color y tipografía definitivas).\n\nEl gris es estructura. El color marca únicamente los elementos que son decisión estratégica, no decoración.\nOrden de izquierda a derecha = orden de prioridad de retención."
+    },
+    {
+      "id": "nota-entreno",
+      "x": 0,
+      "y": -190,
+      "w": 390,
+      "text": "La pantalla de uso diario. Sin barra de pestañas: el usuario está entrenando, no navegando.\n\n\"Registrar serie\" es el elemento más grande de la pantalla, al alcance del pulgar. El descanso arranca solo al pulsarlo.\n\nAbajo, las tres acciones que evitan el abandono de la sesión — accesibles sin salir."
+    },
+    {
+      "id": "nota-inicio",
+      "x": 520,
+      "y": -190,
+      "w": 390,
+      "text": "Una sola pregunta: ¿qué hago hoy? Una acción dominante: Entrenar.\n\nEl usuario nunca elige qué entrenar desde cero.\n\nLa tarjeta con color es motivación con dato real, no una frase genérica. El entrenador IA es una fila discreta, no una pestaña."
+    },
+    {
+      "id": "nota-resumen",
+      "x": 1040,
+      "y": -190,
+      "w": 390,
+      "text": "La pantalla que cierra el hueco de las 8-12 semanas: todo lo que muestra son indicadores adelantados, que sí se mueven desde la semana 1.\n\nSin calorías estimadas: es un dato inventado y destruye credibilidad.\n\n\"¿Cómo te sentiste?\" es la entrada de esfuerzo percibido que alimenta el motor."
+    },
+    {
+      "id": "nota-regreso",
+      "x": 1560,
+      "y": -190,
+      "w": 390,
+      "text": "El usuario vuelve tras 12 días. En ningún lugar de la pantalla se menciona cuánto tiempo estuvo fuera.\n\nLa racha está en pausa, no en cero. Una sola oferta, pequeña y ganable, por debajo de su última sesión.\n\nEl objetivo de ese día no es entrenar bien: es terminar algo."
+    },
+    {
+      "id": "nota-onboarding",
+      "x": 2080,
+      "y": -190,
+      "w": 390,
+      "text": "Pregunta 2 de 6. Una por pantalla, sin teclado, opciones grandes.\n\nLenguaje concreto en vez de etiquetas abstractas: nadie sabe si es \"intermedio\", pero todos saben si entrenaron alguna vez.\n\nAbajo: aún no hay cuenta. El registro va después de ver el plan."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}
