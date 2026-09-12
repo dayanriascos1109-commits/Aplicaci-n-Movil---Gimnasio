@@ -27,11 +27,52 @@ Los wireframes viven en `wireframes/` como fuentes `.dc.html`.
 |---|---|---|
 | Node.js | 20 o superior | Entorno de desarrollo |
 | Android Studio | Última estable | SDK de Android y emulador |
-| JDK | 17 | Compilación Android |
+| JDK | **17 exactamente** | Compilación Android — ver el aviso de abajo |
 | Visual Studio Code | — | Editor (hay ajustes en `.vscode/`) |
 | Xcode | — | **Solo si tienes Mac.** Para iOS sin Mac se usa EAS Build |
 
 En Android Studio hace falta tener instalado el **Android SDK** y al menos un **dispositivo virtual (AVD)** creado.
+
+> ### ⚠️ El Java que trae Android Studio no sirve
+>
+> Android Studio incluye su propio Java (JBR), pero las versiones actuales traen **Java 25**, y React Native necesita **Java 17**. Con el 25 la compilación avanza más de diez minutos y muere en `configureCMakeDebug` con un mensaje engañoso:
+>
+> ```
+> WARNING: A restricted method in java.lang.System has been called
+> ```
+>
+> Ese aviso no explica nada: es Java 25 restringiendo el acceso nativo que necesitan `react-native-worklets` y `react-native-screens`. Hay que instalar el JDK 17 aparte y apuntar `JAVA_HOME` ahí.
+
+---
+
+## Configuración en Windows
+
+Tres cosas que hay que hacer una sola vez y sin las cuales nada compila.
+
+**1 · Permitir la ejecución de scripts** (si no, `npm` y `npx` fallan con `UnauthorizedAccess`):
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+
+**2 · Instalar el JDK 17 y apuntar `JAVA_HOME`** (la segunda línea localiza la ruta e imprime la que configuró):
+
+```powershell
+winget install --id Microsoft.OpenJDK.17 -e
+```
+```powershell
+$jdk = (Get-ChildItem 'C:\Program Files\Microsoft' -Directory -Filter 'jdk-17*' | Select-Object -First 1).FullName; [Environment]::SetEnvironmentVariable('JAVA_HOME', $jdk, 'User'); $jdk
+```
+
+**3 · Apuntar `ANDROID_HOME` al SDK:**
+
+```powershell
+[Environment]::SetEnvironmentVariable('ANDROID_HOME', "$env:LOCALAPPDATA\Android\Sdk", 'User')
+```
+
+Después de cualquiera de estos pasos hay que **cerrar VS Code por completo y volver a abrirlo**: Windows solo entrega las variables nuevas a los programas que arrancan después de crearlas. Reabrir la terminal no basta.
+
+**No clones el proyecto dentro de OneDrive.** `node_modules` son decenas de miles de archivos; la sincronización los vuelve lentísimos y puede corromper compilaciones. Usa una ruta como `C:\Proyectos`.
 
 ---
 
