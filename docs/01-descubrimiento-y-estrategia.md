@@ -19,13 +19,49 @@ El problema no es "falta de rutinas" (existen miles gratis). El problema es la *
 
 La oportunidad no es "otra app de ejercicios", es **eliminar la fricción de decisión** que ocurre cada vez que la vida no coincide con el plan.
 
-## 3. Tipos principales de usuario (personas)
+## 3. Modelo de usuario
 
-1. **El principiante perdido** — nunca entrenó o lo intentó y abandonó; no sabe estructurar nada; necesita guía constante y baja carga cognitiva.
-2. **El ocupado inconsistente** — entrena en gimnasio o en casa, pero su disponibilidad varía semana a semana; necesita que el plan se adapte a él, no al revés.
-3. **El de casa / sin equipo** — entrena con lo que tiene (o nada); necesita rutinas de peso corporal reales, no una versión "light" de la rutina de gimnasio.
-4. **El intermedio estancado** — ya entrena con regularidad pero no progresa; necesita periodización real y detección de estancamiento.
-5. **El disciplinado que busca optimizar** — entrena bien, pero quiere datos, tendencias y precisión (útil para retención y monetización premium, aunque no es el foco del MVP).
+### 3.1 Decisión de arquitectura: tres ejes independientes, no un solo segmento
+
+Un error común del mercado es mezclar en un mismo "tipo de usuario" cosas que cambian a ritmos distintos. Separamos el usuario en **tres ejes ortogonales**:
+
+| Eje | Qué es | Cada cuánto cambia | Dónde vive |
+|---|---|---|---|
+| **Nivel** | Experiencia y capacidad técnica del usuario | Lentamente (meses) | Perfil del usuario |
+| **Contexto** | Dónde entrena y con qué equipo | **Por sesión** (puede cambiar hoy mismo) | Sesión de entrenamiento |
+| **Disponibilidad** | Tiempo por sesión y frecuencia semanal | Semana a semana | Plan + sesión |
+
+**Consecuencia directa:** "entrena en gimnasio" y "entrena en casa" **no son tipos de usuario distintos**. Son el mismo usuario en contextos distintos. El sistema debe permitir que la misma persona entrene el martes en el gimnasio y el jueves en su sala, **sin perder el plan, sin duplicar perfiles y sin romper la progresión**. Esta es una decisión de arquitectura, no solo de UX: el volumen semanal por grupo muscular se acumula de forma global, sin importar dónde se entrenó.
+
+### 3.2 Los 5 niveles de usuario
+
+| Nivel | Quién es | Qué NO sabe | Qué hace la app diferente | Riesgo principal |
+|---|---|---|---|---|
+| **1 · Principiante absoluto** (sin ningún conocimiento) | Nunca entrenó, o lo intentó sin guía. No conoce los nombres de los ejercicios ni qué es una serie o una repetición | Vocabulario, técnica, cómo elegir peso, cuánto es "suficiente" | Enseña el vocabulario antes de pedirlo. Sesiones cortas, pocos ejercicios, foco en técnica y en **crear el hábito**, no en carga. Progresión por dominio técnico, no por peso | Lesión, saturación y abandono en las 2 primeras semanas |
+| **2 · Principiante** | Entrenó antes o conoce lo básico. Reconoce los ejercicios y puede seguir una rutina, pero no sabe construir una | Cómo estructurar y progresar; cuánto volumen necesita | Progresión lineal automática de carga. Estructura semanal clara. Explica el *por qué* de cada ajuste | Hacer demasiado, frustrarse cuando la progresión lineal se acaba |
+| **3 · Intermedio** | Entrena con constancia 6+ meses. Técnica correcta, conoce sus límites | Periodización, gestión de volumen, por qué se estancó | Introduce variación, control de volumen por grupo muscular, detección de estancamiento y deload | Estancamiento y desequilibrios musculares |
+| **4 · Avanzado** | 2+ años entrenando. Maneja RPE/RIR, tiene objetivos definidos | Poco: aquí la app asiste, no enseña | Da **control y datos**: permite sobrescribir al motor, ver tendencias finas, ajustar variables manualmente | Que la app se sienta "para principiantes" y la abandone por falta de control |
+| **5 · Muy avanzado** | Competidor o cercano a competir. Objetivos muy específicos (fuerza máxima, preparación, físico) | Nada que una app genérica pueda enseñarle | Herramienta de registro y análisis de precisión, no de prescripción | **Es el peor segmento para el MVP** (ver nota abajo) |
+
+> **Nota como asesor — no persigas el nivel 5 en el MVP.** Es tentador porque es el usuario más "serio", pero es un mercado muy pequeño, ya tiene entrenador o su propia hoja de cálculo, y exigiría funcionalidad costosa (periodización por bloques, %1RM, picos de competición, gestión de fatiga avanzada) que no sirve al 95% restante. Lo mantenemos como **nivel soportado** en el modelo de datos (para que la app no se le rompa y pueda usarla como registro), pero **no diseñamos para él** ni lo usamos como referencia de producto.
+>
+> **El nivel de mayor valor y mayor diferenciación es el 1.** Casi ninguna app lo resuelve bien: todas asumen que el usuario ya sabe qué es un press banca. Es el segmento con más abandono y donde una experiencia realmente guiada gana por diferencia grande.
+
+### 3.3 El nivel es dinámico, no una etiqueta del registro
+
+Preguntar "¿cuál es tu nivel?" en el onboarding es poco fiable: el principiante se sobreestima y el intermedio se subestima. Nuestra decisión:
+
+- El usuario **declara** un punto de partida en el onboarding, con lenguaje concreto en lugar de etiquetas abstractas (*"¿Sabes hacer una sentadilla con barra?"* en vez de *"¿Eres intermedio?"*).
+- El sistema **recalibra el nivel de forma continua** a partir del comportamiento real: sesiones completadas, progresión de carga, RPE reportado, constancia y dominio de ejercicios.
+- El nivel puede **subir o bajar** (alguien que vuelve tras 6 meses parado no es el mismo de antes).
+
+Esto es en sí mismo una funcionalidad diferenciadora (ver #11 en la tabla de funcionalidades).
+
+### 3.4 El contexto se elige por sesión, no por perfil
+
+- El perfil guarda **mis lugares**: p. ej. `Gimnasio` (equipo completo), `Casa` (mancuernas + banda), `Viaje` (sin equipo).
+- Al iniciar un entrenamiento, una sola pregunta de un toque: **¿dónde entrenas hoy?** — y el plan se recompone al instante con los ejercicios disponibles en ese contexto.
+- El plan semanal y la progresión **no se rompen**: un entrenamiento de piernas en casa sigue contando para el volumen de piernas de la semana. Cambia el *cómo*, no el *qué* ni el progreso.
 
 ## 4. Competidores principales
 
@@ -71,6 +107,9 @@ Esto ya no diferencia: es la base mínima esperada por el usuario (categoría **
 | 8 | Detección de estancamiento / exceso de volumen por grupo muscular | **Diferenciadora** | Resuelve el "ya no progreso y no sé por qué" |
 | 9 | Memoria conversacional persistente del entrenador IA (recuerda semanas de contexto) | **Innovadora** | Evita repetir contexto cada vez, sensación de "me conoce" |
 | 10 | IA visual por cámara (conteo de reps, forma) | **Experimental / Futura** | Feedback de ejecución sin trainer presencial — alto riesgo técnico y de precisión, no debe bloquear el MVP |
+| 11 | Recalibración automática y continua del nivel del usuario | **Innovadora** | El usuario no sabe autoclasificarse; el sistema lo deduce del comportamiento real y ajusta la exigencia sin que tenga que pedirlo |
+| 12 | Continuidad de plan entre contextos (gimnasio ↔ casa ↔ sin equipo) sin perder progresión | **Diferenciadora** | La misma persona entrena en lugares distintos; hoy las apps la obligan a duplicar planes o a improvisar |
+| 13 | Modo guía para principiante absoluto (enseña el vocabulario y la técnica antes de exigir carga) | **Diferenciadora** | Nadie sirve bien al que empieza de cero: es el segmento con más abandono del mercado |
 
 **Recomendación como asesor:** la #10 (IA visual) es la más citada como "innovación fitness" en el mercado, pero es también la más sobrevalorada hoy: requiere visión por computador robusta, funciona mal con cámaras de teléfono en ángulos reales de gimnasio, y un mal conteo de reps daña más la confianza de lo que ayuda. La dejamos en el roadmap **futuro**, no en el MVP ni en v2.
 
@@ -105,6 +144,8 @@ Justificación:
 
 ---
 
-### Próximo paso (Fase 2-3 ya cubiertas arriba; siguiente es Fase 4-5 en detalle)
+### Próximo paso (Fase 2-3 cubiertas; siguiente es Fase 6-7)
 
-Con esto acordado, el siguiente paso es formalizar la **propuesta de valor y el usuario objetivo primario del MVP** (de los 5 tipos de usuario, ¿a cuál priorizamos primero: el ocupado inconsistente o el principiante perdido?) antes de pasar a la definición de funcionalidades del MVP (Fase 6-7). Te propongo decidir esto en la siguiente ronda antes de avanzar a wireframes o arquitectura.
+Decisión tomada sobre el modelo de usuario: **5 niveles + contexto por sesión + disponibilidad variable**, con foco de diseño en los niveles 1-3 y soporte (sin diseño dedicado) para 4-5.
+
+Lo siguiente es la **definición de funcionalidades y el corte MVP / v2 / futuro** (Fase 6-7): qué entra en la primera versión publicable, qué se deja preparado en la arquitectura y qué se descarta por ahora.
